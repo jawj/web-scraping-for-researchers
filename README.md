@@ -10,7 +10,7 @@ _Web scraping is the process of extracting useful data from web pages — with a
 <!-- Regular Expressions can play a useful role here. -->
 
 
-I took to Google, refreshing my memory on programming language libraries like [Scrapy](https://scrapy.org/) (Python) and Mechanize ([Ruby]((https://github.com/sparklemotion/mechanize)), [Perl](http://search.cpan.org/dist/WWW-Mechanize/)), native GUI scraping applications, and online scraping services. 
+I took to Google, refreshing my memory on programming language libraries like [Scrapy](https://scrapy.org/) (Python) and Mechanize ([Ruby](https://github.com/sparklemotion/mechanize), [Perl](http://search.cpan.org/dist/WWW-Mechanize/)), native GUI scraping applications, and online scraping services. 
 
 And then I remembered that time last year when I copied all my shopping favourites from one [Ocado](http://www.ocado.com) account to another using only Google Chrome, and the answer hit me right in the face. 
 
