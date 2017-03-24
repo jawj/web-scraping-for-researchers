@@ -23,13 +23,13 @@ All modern web browsers provide tools to help web developers design and debug th
 
 1. **Elements inspector** or **web inspector**. This lets us to point and click on an element, and be taken to its corresponding HTML source and styles. We can use this to work out how to specify the content we want scraping.
 
-![Screenshot: web inspector](/jawj/web-scraping-for-researchers/blob/master/web-inspector.png)
+![Screenshot: web inspector](web-inspector.png)
 
 2. **Console**. This allows us to type (or paste in) and execute JavaScript code, in the context of the current page. Here we can write simple code to extract data from the page, and also to automate navigation on to further pages.
 
-![Screenshot: console](/jawj/web-scraping-for-researchers/blob/master/console.png)
+![Screenshot: console](console.png)
 
-We'll discuss exactly what code to write after considering the advantages and disadvantages of this scraping approach. Or you can dive straight in to the [example JavaScript code](/jawj/web-scraping-for-researchers/blob/master/scraping-example-v2.js).
+We'll discuss exactly what code to write after considering the advantages and disadvantages of this scraping approach. Or you can dive straight in to the [example JavaScript code](scraping-example-v2.js).
 
 
 ## Pros and cons 
@@ -186,7 +186,7 @@ Alternatively, if no `Next` button is found, we have reached the end of the peti
 
 Once this script has finished executing (as signalled by the message 'Finsished.' appearing in the Console), we can simply copy all the text in the `<textearea>` (click, Ctrl/Cmd-A, Ctrl/Cmd-C), paste into TextEdit or Notepad, and save with a .csv extension, ready to open in Excel, R, Stata, etc.
 
-The [complete example code](/jawj/web-scraping-for-researchers/blob/master/scraping-example-v2.js) is ready to paste straight into the Console and see working.
+The [complete example code](scraping-example-v2.js) is ready to paste straight into the Console and see working.
 
 ## Feedback
 
