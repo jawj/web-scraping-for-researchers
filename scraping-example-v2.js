@@ -39,7 +39,7 @@ function write(/* any number of arguments */) {
       value instanceof Date ? value.toISOString().replace('T', ' ').replace('Z', '') :  // Date -> UTC date understood by Excel
       '"' + String(value).replace(/"/g, '""') + '"';  // anything else -> quote, escaping any contained quotes
   });
-  var fullyScrolled = textarea.scrollTop >= textarea.scrollHeight - textarea.clientHeight - 1 ||  // the -1 makes this work in Edge (rounding issues?)
+  var fullyScrolled = textarea.scrollTop >= textarea.scrollHeight - textarea.clientHeight - 1 ||  // the -1 makes this work in Edge
     textarea.clientHeight >= textarea.scrollHeight;  
   textarea.value += columns.join(',') + '\n';
   if (fullyScrolled) textarea.scrollTop = textarea.scrollHeight - textarea.clientHeight;
