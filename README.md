@@ -7,8 +7,6 @@ Most years at [Sussex](http://sussex.ac.uk/economics/gmackerron), I run a two-ho
 This year, I got asked to cover some basic web scraping techniques too. This set me thinking — what are the best tools for web scraping? And are these also the best tools with which to teach it?
 
 _Web scraping is the process of extracting useful data from web pages — with appropriate regard to copyright and [database rights](https://www.twobirds.com/en/news/articles/2004/uk-database-rights-defined) — which commonly also requires automating a series of interactions with those pages._
-<!-- Regular Expressions can play a useful role here. -->
-
 
 I took to Google, refreshing my memory on programming language libraries like [Scrapy](https://scrapy.org/) (Python) and Mechanize ([Ruby]((https://github.com/sparklemotion/mechanize)), [Perl](http://search.cpan.org/dist/WWW-Mechanize/)), native GUI scraping applications, and online scraping services. 
 
@@ -76,17 +74,19 @@ For exposition, I've divided the code into five parts. Happily, four of the five
 
 ### `start()`
 
-    function start() {
-      textarea = document.body.appendChild(document.createElement('textarea'));
-      iframe = document.body.appendChild(document.createElement('iframe'));
+```javascript
+function start() {
+  textarea = document.body.appendChild(document.createElement('textarea'));
+  iframe = document.body.appendChild(document.createElement('iframe'));
 
-      var commonStyles = { position: 'absolute', left: '2%', width: '96%', border: '2px solid #0af' };
-      Object.assign(textarea.style, commonStyles, { bottom: '2%', height: '26%' });
-      Object.assign(iframe.style, commonStyles, { top: '2%', height: '66%' });
+  var commonStyles = { position: 'absolute', left: '2%', width: '96%', border: '2px solid #0af' };
+  Object.assign(textarea.style, commonStyles, { bottom: '2%', height: '26%' });
+  Object.assign(iframe.style, commonStyles, { top: '2%', height: '66%' });
 
-      iframe.addEventListener('load', process, false);
-      iframe.contentWindow.location.href = window.location.href;
-    }
+  iframe.addEventListener('load', process, false);
+  iframe.contentWindow.location.href = window.location.href;
+}
+```
 
 We begin with a function that sets us up by making and styling two new page elements. These elements are deliberately allowed to leak into the global scope (by omitting `var`), so we can address them later.
 
@@ -105,22 +105,23 @@ Unsurprisingly, we'll call this `start()` function when we're ready to begin.
 
 ###  `write(value1, value2, ...)`
 
-    function write(/* any number of arguments */) {
-      var columns = Array.from(arguments).map(function (value) {
-        var t = typeof value;
-        return t == 'null' || t == 'undefined' ? '' :
-          t == 'number' ? String(value) :
-          t == 'boolean' ? (value ? '1' : '0') :
-          value instanceof Date ? value.toISOString().replace('T', ' ').replace('Z', '') :
-          '"' + String(value).replace(/"/g, '""') + '"';
-      });
+```javascript
+function write(/* any number of arguments */) {
+  var columns = Array.from(arguments).map(function (value) {
+    var t = typeof value;
+    return t == 'null' || t == 'undefined' ? '' :
+      t == 'number' ? String(value) :
+      t == 'boolean' ? (value ? '1' : '0') :
+      value instanceof Date ? value.toISOString().replace('T', ' ').replace('Z', '') :
+      '"' + String(value).replace(/"/g, '""') + '"';
+  });
 
-      var fullyScrolled = textarea.scrollTop >= textarea.scrollHeight - textarea.clientHeight - 1 ||
-        textarea.clientHeight >= textarea.scrollHeight;  
-      textarea.value += columns.join(',') + '\n';
-      if (fullyScrolled) textarea.scrollTop = textarea.scrollHeight - textarea.clientHeight;
-    }
-
+  var fullyScrolled = textarea.scrollTop >= textarea.scrollHeight - textarea.clientHeight - 1 ||
+    textarea.clientHeight >= textarea.scrollHeight;  
+  textarea.value += columns.join(',') + '\n';
+  if (fullyScrolled) textarea.scrollTop = textarea.scrollHeight - textarea.clientHeight;
+}
+```
 
 This function writes its arguments into the `<textarea>`, as the columns of one row of a CSV file. It operates sensibly with numbers, booleans, text, `Date` objects, and `null` and `undefined`. Text is 'escaped' so that the CSV format isn't screwed up by variables containing commas, newlines and double quotes. Dates come out in a UTC/GMT format that's readable by both humans and Excel.
 
@@ -131,20 +132,24 @@ We call this function every time we've scraped a new row of data from a target w
 
 ### `abort()`
 
-    function abort() {
-      clearTimeout(clickTimeout);
-      iframe.removeEventListener('load', process, false);
-    }
+```javascript
+function abort() {
+  clearTimeout(clickTimeout);
+  iframe.removeEventListener('load', process, false);
+}
+```
 
 We call this function if we ever need to stop our scraping process prematurely. It stops the next action (and thus all subsequent actions) happening, whether that's processing a loaded page or loading a new one.
 
 
 ### Polyfills: `Array.from()` and `Object.assign()`
 
-    if (!Array.from) Array.from = function (arraylike) { return [].slice.call(arraylike); };
-    if (!Object.assign) Object.assign = function (o1) { 
-      [].slice.call(arguments, 1).forEach(function (o2) { for (var key in o2) o1[key] = o2[key]; });
-    };
+```javascript
+if (!Array.from) Array.from = function (arraylike) { return [].slice.call(arraylike); };
+if (!Object.assign) Object.assign = function (o1) { 
+  [].slice.call(arguments, 1).forEach(function (o2) { for (var key in o2) o1[key] = o2[key]; });
+};
+```
 
 We include a couple of limited [polyfills](https://en.wikipedia.org/wiki/Polyfill) to stop up gaps in Internet Explorer's JavaScript support. The `if` statements mean they have no effect in other browsers.
 
@@ -155,22 +160,24 @@ All our custom scraping work happens in this function. This is the one you will 
 
 The function shown here implements a simple example scraping job, which is to extract [vote counts for UK government petitions](https://petition.parliament.uk/petitions?state=with_response). I've picked only those with a government response, which are spread across (at the time of writing) nine pages.
 
-    function process() {
-      console.log('Processing', iframe.contentWindow.location.href);
-      var doc = iframe.contentDocument;
-      var timestamp = new Date();
+```javascript
+function process() {
+  console.log('Processing', iframe.contentWindow.location.href);
+  var doc = iframe.contentDocument;
+  var timestamp = new Date();
 
-      Array.from(doc.querySelectorAll('.petition-item')).forEach(function (item) {
-        var count = parseInt(item.querySelector('.count').getAttribute('data-count'));
-        var title = item.querySelector('h3 a');
-        var name = title.text;
-        write(count, name, timestamp);
-      });
+  Array.from(doc.querySelectorAll('.petition-item')).forEach(function (item) {
+    var count = parseInt(item.querySelector('.count').getAttribute('data-count'));
+    var title = item.querySelector('h3 a');
+    var name = title.text;
+    write(count, name, timestamp);
+  });
 
-      var nextLink = doc.querySelector('a.next');
-      if (nextLink) clickTimeout = setTimeout(function () { nextLink.click(); }, 500);
-      else console.log('Finished.');
-    }
+  var nextLink = doc.querySelector('a.next');
+  if (nextLink) clickTimeout = setTimeout(function () { nextLink.click(); }, 500);
+  else console.log('Finished.');
+}
+```
 
 First, we take a reference to the document loaded inside the `<iframe>`, and the current date, which we will output as a timestamp for the data scraped on this page. 
 
