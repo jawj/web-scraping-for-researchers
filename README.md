@@ -2,18 +2,7 @@
 # Web Scraping for Researchers: press Cmd + Alt + I
 
 
-Most years at [Sussex](http://sussex.ac.uk/economics/gmackerron), I run a two-hour practical session for quantitative researchers on the topic of Regular Expressions (see [slides & teaching materials](http://mackerron.com/text/)). 
-
-<!-- 
-It's a bit of a challenge to sign people up to learn something like this when they've never heard of it. The session has been titled _Text: what you don't know you don't know_; next time I may go with _Regular Expressions for Researchers: fix ALL your data problems using this one weird trick_. 
-
-Regular Expressions (RegExps, regexes) are, roughly, a tool for extremely flexible search and replace. You can use them to do things like:
- 
-- search a document for phone numbers or [street addresses](https://xkcd.com/208/) or -ing words (while ignoring ingrate or thingy); 
-- normalize postcode formats; 
-- rearrange data fields; or
-- fix broken CSV files.
--->
+Most years at [Sussex](http://sussex.ac.uk/economics/gmackerron), I run a two-hour practical session for quantitative researchers on the topic of Regular Expressions (see [slides & teaching materials](http://mackerron.com/text/)).
 
 This year, I got asked to cover some basic web scraping techniques too. This set me thinking — what are the best tools for web scraping? And are these also the best tools with which to teach it?
 
@@ -34,13 +23,13 @@ All modern web browsers provide tools to help web developers design and debug th
 
 1. **Elements inspector** or **web inspector**. This lets us to point and click on an element, and be taken to its corresponding HTML source and styles. We can use this to work out how to specify the content we want scraping.
 
-[screenshot]
+![Screenshot: web inspector](/jawj/web-scraping-for-researchers/blob/master/web-inspector.png)
 
 2. **Console**. This allows us to type (or paste in) and execute JavaScript code, in the context of the current page. Here we can write simple code to extract data from the page, and also to automate navigation on to further pages.
 
-[screenshot]
+![Screenshot: console](/jawj/web-scraping-for-researchers/blob/master/console.png)
 
-We'll discuss exactly what code to write after considering the advantages and disadvantages of this scraping approach. Or you can dive straight in to the [example JavaScript code](link).
+We'll discuss exactly what code to write after considering the advantages and disadvantages of this scraping approach. Or you can dive straight in to the [example JavaScript code](/jawj/web-scraping-for-researchers/blob/master/scraping-example-v2.js).
 
 
 ## Pros and cons 
@@ -197,7 +186,7 @@ Alternatively, if no `Next` button is found, we have reached the end of the peti
 
 Once this script has finished executing (as signalled by the message 'Finsished.' appearing in the Console), we can simply copy all the text in the `<textearea>` (click, Ctrl/Cmd-A, Ctrl/Cmd-C), paste into TextEdit or Notepad, and save with a .csv extension, ready to open in Excel, R, Stata, etc.
 
-The [complete example code](link) has a few helpful comments, and is ready to paste straight into the Console and see working.
+The [complete example code](/jawj/web-scraping-for-researchers/blob/master/scraping-example-v2.js) is ready to paste straight into the Console and see working.
 
 ## Feedback
 
