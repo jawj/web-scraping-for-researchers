@@ -2,7 +2,7 @@
 # Web Scraping for Researchers: press Cmd + Alt + I
 
 
-Most years at [Sussex](http://sussex.ac.uk/economics/gmackerron), I run a two-hour practical session for quantitative researchers on the topic of Regular Expressions (see [slides & teaching materials](http://mackerron.com/text/)).
+Most years [at Sussex](http://sussex.ac.uk/economics/gmackerron), I run a two-hour practical session for quantitative researchers on the topic of Regular Expressions (see [slides & teaching materials](http://mackerron.com/text/)).
 
 This year, I got asked to cover some basic web scraping techniques too. This set me thinking — what are the best tools for web scraping? And are these also the best tools with which to teach it?
 
@@ -198,4 +198,6 @@ The [complete example code](scraping-example-v2.js) is ready to paste straight i
 ## Feedback
 
 I hope you find this technique useful. Please do get in touch with any feedback, or submit an issue or pull request.
+
+Regarding intellectual property, the [example JavaScript code](scraping-example-v2.js) is [MIT licenced](https://opensource.org/licenses/MIT). All rights in this tutoral text are reserved by [the author](http://sussex.ac.uk/economics/gmackerron) (do contact me if you have some use in mind).
 

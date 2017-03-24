@@ -1,6 +1,7 @@
 
 /* Scrape vote counts for UK government petitions into a CSV
-   george.mackerron@sussex.ac.uk, February 2017
+   Copyright (C) 2017 George MacKerron
+	 Made available under the MIT Licence: https://opensource.org/licenses/MIT
  
  * Use any up-to-date browser: Chrome, Firefox, Safari, Edge, IE (these are listed from best to worst)
  * For Safari only, first go to Preferences > Advanced, and check 'Show Develop menu in menu bar'
@@ -26,26 +27,6 @@ function start() {
 	iframe.contentWindow.location.href = window.location.href;
 }
 
-function process() {
-	// This function has two jobs: (1) extracting data from the current iframe page; 
-	// and (2) navigating to the next page. Both parts will need customising for other scraping tasks.
-
-	console.log('Processing', iframe.contentWindow.location.href);
-	var doc = iframe.contentDocument;
-	var timestamp = new Date();
-
-	Array.from(doc.querySelectorAll('.petition-item')).forEach(function (item) {  // use Array.from because NodeList has no forEach in Edge
-		var count = parseInt(item.querySelector('.count').getAttribute('data-count'));
-		var title = item.querySelector('h3 a');
-		var name = title.text;
-		write(count, name, timestamp);
-	});
-
-	var nextLink = doc.querySelector('a.next');
-	if (nextLink) clickTimeout = setTimeout(function () { nextLink.click(); }, 500);  // clickTimeout is global
-	else console.log('Finished.');
-}
-
 function write(/* any number of arguments */) {
 	// This function writes its arguments as columns of a CSV file to the <textarea> we made.
 	// Plus it keeps the output scrolled to the end if it's at the end already.
@@ -69,6 +50,26 @@ function abort() {
 
 	clearTimeout(clickTimeout);
 	iframe.removeEventListener('load', process, false);
+}
+
+function process() {
+	// This function has two jobs: (1) extracting data from the current iframe page; 
+	// and (2) navigating to the next page. Both parts will need customising for other scraping tasks.
+
+	console.log('Processing', iframe.contentWindow.location.href);
+	var doc = iframe.contentDocument;
+	var timestamp = new Date();
+
+	Array.from(doc.querySelectorAll('.petition-item')).forEach(function (item) {  // use Array.from because NodeList has no forEach in Edge
+		var count = parseInt(item.querySelector('.count').getAttribute('data-count'));
+		var title = item.querySelector('h3 a');
+		var name = title.text;
+		write(count, name, timestamp);
+	});
+
+	var nextLink = doc.querySelector('a.next');
+	if (nextLink) clickTimeout = setTimeout(function () { nextLink.click(); }, 500);  // clickTimeout is global
+	else console.log('Finished.');
 }
 
 // These two lines provide basic 'polyfills' for IE, which lacks some modern JavaScript niceties
