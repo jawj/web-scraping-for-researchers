@@ -183,15 +183,15 @@ First, we take a reference to the document loaded inside the `<iframe>`, and the
 
 Next, we select every page element with CSS class `petition-item`, by calling `querySelectorAll()`, and iterate over the returned elements — extracting the data we are interested in, and calling `write()` with the results.
 
-Finally, we look for a 'Next' button, again by CSS class. 
+Finally, we look for a [Next] button, again by CSS class. 
 
 If one is found, we simulate a click on it, to navigate the next page. But we insert a half-second delay before doing so, via `setTimeout`, to play nice and avoid pummelling the server. Once the next page has loaded, the `load` callback already attached to our `<iframe>` will ensure this function, `process()`, is called again.
 
-Alternatively, if no `Next` button is found, we have reached the end of the petitions list, and we call it a day.
+Alternatively, if no [Next] button is found, we have reached the end of the petitions list, and we call it a day.
 
 ### Finishing up
 
-Once this script has finished executing (as signalled by the message 'Finsished.' appearing in the Console), we can simply copy all the text in the `<textearea>` (click, Ctrl/Cmd-A, Ctrl/Cmd-C), paste into TextEdit or Notepad, and save with a .csv extension, ready to open in Excel, R, Stata, etc.
+Once this script has finished executing (as signalled by the message 'Finished.' appearing in the Console), we can simply copy all the text in the `<textarea>` (click, Ctrl/Cmd-A, Ctrl/Cmd-C), paste into TextEdit or Notepad, and save with a .csv extension, ready to open in Excel, R, Stata, etc.
 
 The [complete example code](scraping-example-v2.js) is ready to paste straight into the Console and see working.
 
