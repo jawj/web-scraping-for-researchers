@@ -45,7 +45,7 @@ This approach has several advantages for teaching.
 
 There are also a couple of possible disadvantages:
 
-* **There's a fair bit for students to learn**. Ceratinly there's a higher barrier to entry than when using a web- or GUI-based option. They'll need to get to grips with basic HTML, CSS selectors, and JavaScript. (It's also easy to see this opportunity for learning as an advantage, though!).
+* **There's a fair bit for students to learn**. Certainly there's a higher barrier to entry than when using a web- or GUI-based option. They'll need to get to grips with basic HTML, CSS selectors, and JavaScript. (It's also easy to see this opportunity for learning as an advantage, though!).
 
 * **It uses JavaScript**. While JavaScript can be unfairly maligned, it's still arguably not quite so fun or beginner-friendly as Ruby, or as widely known by researchers as, say, Python or Matlab.
 
