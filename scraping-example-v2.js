@@ -33,7 +33,7 @@ function write(/* any number of arguments */) {
 
   var columns = Array.from(arguments).map(function (value) {
     var t = typeof value;
-    return t == 'null' || t == 'undefined' ? '' :  // null or undefined -> empty/missing value
+    return value == null ? '' :  // null or undefined -> empty/missing value
       t == 'number' ? String(value) :  // number -> unquoted
       t == 'boolean' ? (value ? '1' : '0') :  // boolean -> 0/1 dummy
       value instanceof Date ? value.toISOString().replace('T', ' ').replace('Z', '') :  // Date -> UTC date understood by Excel

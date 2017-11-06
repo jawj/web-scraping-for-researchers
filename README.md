@@ -109,7 +109,7 @@ Unsurprisingly, we'll call this `start()` function when we're ready to begin.
 function write(/* any number of arguments */) {
   var columns = Array.from(arguments).map(function (value) {
     var t = typeof value;
-    return t == 'null' || t == 'undefined' ? '' :
+    return value == 'null' ? '' :
       t == 'number' ? String(value) :
       t == 'boolean' ? (value ? '1' : '0') :
       value instanceof Date ? value.toISOString().replace('T', ' ').replace('Z', '') :
