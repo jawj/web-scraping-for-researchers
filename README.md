@@ -197,7 +197,7 @@ The [complete example code](scraping-example-v2.js) is ready to paste straight i
 
 ## Level II
 
-You can apply this same method to more complex scraping tasks, involving inexact text matching, following links, triggering asynchronous page updates and waiting on DOM mutations to indicate they are finished, and so on. Modern JavaScript, with async/await and so on, can make this much more palatable. See this [more advanced example](advanced/async-scraping-example.js).
+You can apply this same method to more complex scraping tasks, involving inexact text matching, following links, triggering asynchronous page updates and waiting on DOM mutations to indicate they are finished, and so on. Modern JavaScript — especially  `async`/`await` — makes this much more palatable. See this [more advanced example](advanced/advanced-scraping-example.js).
 
 ## Feedback
 
