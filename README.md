@@ -195,6 +195,10 @@ Once this script has finished executing (as signalled by the message 'Finished.'
 
 The [complete example code](scraping-example-v2.js) is ready to paste straight into the Console and see working.
 
+## Level II
+
+You can apply this same method to more complex scraping tasks, involving inexact text matching, following links, triggering asynchronous page updates and waiting on DOM mutations to indicate they are finished, and so on. Modern JavaScript, with async/await and so on, can make this much more palatable. See this [more advanced example](advanced/async-scraping-example.js).
+
 ## Feedback
 
 I hope you find this technique useful. Please do get in touch with any feedback, or submit an issue or pull request.
