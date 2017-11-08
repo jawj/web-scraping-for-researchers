@@ -19,14 +19,30 @@
  */
 
 
+var make = (doc, ...tags) => tags.map(tag => doc.body.appendChild(doc.createElement(tag)));
+var qsa = (el, q) => [].slice.call(el.querySelectorAll(q));
+
+
+// == Make and style overlay elements ==
+
+var [indexFrame, matchFrame, textarea] = make(document, 'iframe', 'iframe', 'textarea');
+var commonStyles = { position: 'absolute', left: '2%', width: '96%', height: '30%', border: '2px solid #0af', zIndex: 10000 };
+Object.assign(indexFrame.style, commonStyles, { top: '2%' });
+Object.assign(matchFrame.style, commonStyles, { top: '34%' });
+Object.assign(textarea.style, commonStyles, { top: '66%' });
+
+// restore CSV value from localStorage to textarea in case of reload etc.
+textarea.value = localStorage.getItem('csv') || '';
+
+
 // == Utility functions and Promise-ification ==
 
 // load a JS script (by appending a script tag to <head>), returning Promise
 var loadScript = (src) => new Promise(resolve => {
-  var tgscript = document.createElement('script');
-  tgscript.onload = resolve;
-  tgscript.src = src;
-  document.getElementsByTagName('head')[0].appendChild(tgscript);
+  var scriptTag = document.createElement('script');
+  scriptTag.onload = resolve;
+  scriptTag.src = src;
+  document.getElementsByTagName('head')[0].appendChild(scriptTag);
 });
 
 // fetch and parse a subset of CSV (no quotes!) including a header into an array of objects
@@ -46,6 +62,23 @@ var loadCSV = async (url) => {
   return data;
 };
 
+// write values as columns of a CSV file to textarea, save to localStorage, and keep scrolled to end
+var writeCSV = (...values) => {
+  var columns = values.map(value => {
+    var t = typeof value;
+    return value == null ? '' :  // catches undefined too
+      t == 'number' ? String(value) :
+      t == 'boolean' ? (value ? '1' : '0') :
+      value instanceof Date ? value.toISOString().replace('T', ' ').replace('Z', '') :
+      '"' + String(value).replace(/"/g, '""') + '"';
+  });
+  var fullyScrolled = textarea.scrollTop >= textarea.scrollHeight - textarea.clientHeight - 1 ||
+    textarea.clientHeight >= textarea.scrollHeight;
+  textarea.value += columns.join(',') + '\n';
+  if (fullyScrolled) textarea.scrollTop = textarea.scrollHeight - textarea.clientHeight;
+  localStorage.setItem('csv', textarea.value);
+}
+
 // add an event listener that removes itself as soon as it's called
 var addOneTimeEventListener = (element, event, listener) => {
   var wrappedListener = (...args) => {
@@ -62,52 +95,19 @@ var openURLInFrame = (URL, frame) => new Promise(resolve => {
   frame.contentWindow.location.href = URL;
 });
 
-// Promise-ified navigation
+// more Promise-ified navigation
 var back = (frame) => new Promise(resolve => {
   console.log(`Going back ...`);
   addOneTimeEventListener(frame, 'load', resolve);
   frame.contentWindow.history.back();
 });
 
-// write values as columns of a CSV file to textarea, save to localStorage, and keep scrolled to end
-var write = (...values) => {
-  var columns = values.map(value => {
-    var t = typeof value;
-    return value == null ? '' :  // catches undefined too
-      t == 'number' ? String(value) :
-      t == 'boolean' ? (value ? '1' : '0') :
-      value instanceof Date ? value.toISOString().replace('T', ' ').replace('Z', '') :
-      '"' + String(value).replace(/"/g, '""') + '"';
-  });
-  var fullyScrolled = textarea.scrollTop >= textarea.scrollHeight - textarea.clientHeight - 1 ||
-    textarea.clientHeight >= textarea.scrollHeight;
-  textarea.value += columns.join(',') + '\n';
-  if (fullyScrolled) textarea.scrollTop = textarea.scrollHeight - textarea.clientHeight;
-  localStorage.setItem('csv', textarea.value);
-}
-
 // Promise-ified setTimeout
 var sleep = (seconds) => new Promise(resolve => {
   console.log(`Sleeping for ${seconds.toFixed(1)} seconds`);
   setTimeout(resolve, seconds * 1000)
 });
-
-// simple shortcuts
 var sleepBetween = (min, max) => sleep(min + Math.random() * (max - min));
-var make = (doc, ...tags) => tags.map(tag => doc.body.appendChild(doc.createElement(tag)));
-var qsa = (el, q) => [].slice.call(el.querySelectorAll(q));
-
-
-// == Make and style overlay elements ==
-
-var [indexFrame, matchFrame, textarea] = make(document, 'iframe', 'iframe', 'textarea');
-var commonStyles = { position: 'absolute', left: '2%', width: '96%', height: '30%', border: '2px solid #0af', zIndex: 10000 };
-Object.assign(indexFrame.style, commonStyles, { top: '2%' });
-Object.assign(matchFrame.style, commonStyles, { top: '34%' });
-Object.assign(textarea.style, commonStyles, { top: '66%' });
-
-// restore CSV value from localStorage to textarea in case of reload etc.
-textarea.value = localStorage.getItem('csv') || '';
 
 
 // == Job-specific helpers ==
@@ -160,10 +160,8 @@ var getMatches = () => qsa(indexFrame.contentDocument, '.matches td.info-button'
 // start the scraping process which, thanks to async/await, can be implemented as a simple loop
 (async () => {  // only in Chrome can we await at top level in console, so use function wrapper for compatibility
 
-  // load trigram library and source match data
-  var trigrams = loadScript('http://right.here:8080/trigrams.js');
-  var csv = loadCSV('http://right.here:8080/matches-to-look-up.csv');
-  [trigrams, csv] = [await trigrams, await csv];
+  await loadScript('http://right.here:8080/trigrams.js');
+  var csv = await loadCSV('http://right.here:8080/matches-to-look-up.csv');
 
   // count number of matches already retrieved via number of output lines, to decide where to start in source list,
   // then iterate over rows, which each represent a source match
@@ -242,7 +240,7 @@ var getMatches = () => qsa(indexFrame.contentDocument, '.matches td.info-button'
     }
 
     // save data for this match to CSV
-    write(
+    writeCSV(
       sourceMatch.div,
       sourceMatch.matchdate,
       sourceMatch.hometeam,
