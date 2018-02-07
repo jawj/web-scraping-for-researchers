@@ -129,7 +129,7 @@ var leagueMap = {
 var clickUK = () => new Promise(resolve => {
   console.log('Clicking [UK] ...');
   var observer = new MutationObserver(mutations => {
-    // when the 'UK' button is clicked, a grey overlay is placed on top of the match data while new data is fetcehed;
+    // when the 'UK' button is clicked, a grey overlay is placed on top of the match data while new data is fetched;
     // when the new data has fully loaded, the overlay is removed, and that removal is what we listen for
     var removedOverlay = mutations.some(mutation => mutation.removedNodes.length > 0);
     if (removedOverlay) {
