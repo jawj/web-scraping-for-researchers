@@ -1,18 +1,21 @@
 
-/* Scrape kick-off times and goal times from uk.soccerway.com for a predefined list of matches
-   Copyright (C) 2017 George MacKerron
+/* Scrape English and Scottish football leagues kick-off times and goal times 
+   from uk.soccerway.com for a predefined list of matches provided in a CSV file
+   
+   Copyright (C) 2017 - 2018 George MacKerron
    Made available under the MIT Licence: https://opensource.org/licenses/MIT
 
    This is a much more complex task, and we use async/await to enable a synchronous-style main loop
    (it's ES6 but we stick with var, not let/const, because let/const can get in the way when working interactively)
  
- * Use a modern browser — this has been tested in Chrome
+ * Use a modern browser — this has been tested in Chrome
+ * Now that SoccerWay is https-only, Chrome needs to be run with the  --allow-running-insecure-content flag
 
  * Prepare to serve local files (JS libraries, data) from this folder. In Terminal:
    > echo '127.0.0.1 right.here' | sudo tee -a /etc/hosts  # because 'localhost' doesn't work with CORS
    > sudo npm install -g http-server; http-server --cors
 
- * Visit http://uk.soccerway.com/
+ * Visit https://uk.soccerway.com/
  * Press Cmd + Alt + I (Mac) or Ctrl + Shift + I (PC) to open developer tools
  * Click 'Console', paste this script in at the > or >>, and press Return
  * To abort, reload the page
@@ -47,7 +50,7 @@ var loadScript = (src) => new Promise(resolve => {
 
 // fetch and parse a subset of CSV (no quotes!) including a header into an array of objects
 // e.g. "header1,header2\n1,a\n2,b" becomes [{header1: '1', header2: 'a'}, {header1: '2', header2: 'b'}]
-var loadCSV = async (url) => {
+var loadSimpleCSV = async (url) => {
   var res = await fetch(url);
   var txt = await res.text();
   var rows = txt.split('\n');
@@ -93,13 +96,6 @@ var openURLInFrame = (URL, frame) => new Promise(resolve => {
   console.log(`Loading ${URL} ...`);
   addOneTimeEventListener(frame, 'load', resolve);
   frame.contentWindow.location.href = URL;
-});
-
-// more Promise-ified navigation
-var back = (frame) => new Promise(resolve => {
-  console.log(`Going back ...`);
-  addOneTimeEventListener(frame, 'load', resolve);
-  frame.contentWindow.history.back();
 });
 
 // Promise-ified setTimeout
@@ -148,7 +144,8 @@ var getMatches = () => qsa(indexFrame.contentDocument, '.matches td.info-button'
   var tr = td.parentElement;
   var home = tr.querySelector('.team-a a').title;
   var away = tr.querySelector('.team-b a').title;
-  var score = tr.querySelector('.score a').textContent;
+  var scoreLink = tr.querySelector('.score a');
+  var score = scoreLink ? tr.querySelector('.score a').textContent : '999 - 999';
   var URL = tr.querySelector('.info-button a').href;
   var div = URL.match(/\/matches\/\d{4}\/\d{2}\/\d{2}\/(.+?\/.+?)\//)[1];  // e.g. 'england/championship'
   return { home, score, away, URL, div };
@@ -161,7 +158,7 @@ var getMatches = () => qsa(indexFrame.contentDocument, '.matches td.info-button'
 (async () => {  // only in Chrome can we await at top level in console, so use function wrapper for compatibility
 
   await loadScript('http://right.here:8080/trigrams.js');
-  var csv = await loadCSV('http://right.here:8080/matches-to-look-up.csv');
+  var csv = await loadSimpleCSV('http://right.here:8080/ko-needed-matches.csv');
 
   // count number of matches already retrieved via number of output lines, to decide where to start in source list,
   // then iterate over rows, which each represent a source match
@@ -173,10 +170,10 @@ var getMatches = () => qsa(indexFrame.contentDocument, '.matches td.info-button'
     console.log('Looking for match: ', sourceMatch);
 
     // create an index page URL for the date of this source match, and load in iframe if not loaded already
-    var dateURL = `http://uk.soccerway.com/matches/${sourceMatch.matchdate.replace(/-/g, '/')}/`;
+    var dateURL = `https://uk.soccerway.com/matches/${sourceMatch.matchdate.replace(/-/g, '/')}/`;
     if (indexFrame.contentWindow.location.href != dateURL) {
       await openURLInFrame(dateURL, indexFrame);
-      await sleepBetween(1, 3);  // don't pummel the server
+      await sleepBetween(1, 2);  // don't pummel the server
       await clickUK();
     }
 
@@ -207,7 +204,7 @@ var getMatches = () => qsa(indexFrame.contentDocument, '.matches td.info-button'
     if (bestMatch) {
 
       // load the match page in its own frame
-      await sleepBetween(1, 3);  // don't pummel the server
+      await sleepBetween(1, 2);  // don't pummel the server
       await openURLInFrame(bestMatch.URL, matchFrame);
 
       // get kick-off time (allowing for Scottish and English league formatting differences)
@@ -254,6 +251,6 @@ var getMatches = () => qsa(indexFrame.contentDocument, '.matches td.info-button'
       bestMatch ? bestMatch.away : null
     );
 
-    await sleepBetween(5, 15);  // don't pummel server
+    await sleepBetween(2, 5);  // don't pummel server
   }
 })();
