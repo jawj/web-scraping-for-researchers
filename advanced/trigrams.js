@@ -5,6 +5,7 @@ Trigram matching with accent normalisation
 Copyright (C) 2017 George MacKerron
 Made available under the MIT Licence: https://opensource.org/licenses/MIT
  */
+ 
 var Trigrams,
   hasProp = {}.hasOwnProperty;
 
@@ -205,88 +206,3 @@ Trigrams = (function() {
   return Trigrams;
 
 })();
-
-Trigrams.Haystack = (function() {
-  function Haystack(data) {
-    var datum;
-    this.trigrams = (function() {
-      var j, len1, results;
-      results = [];
-      for (j = 0, len1 = data.length; j < len1; j++) {
-        datum = data[j];
-        if (datum instanceof Object) {
-          results.push(new Trigrams(datum.name, {
-            fudgeFactor: datum.fudgeFactor
-          }));
-        } else {
-          results.push(new Trigrams(datum));
-        }
-      }
-      return results;
-    })();
-  }
-
-  Haystack.prototype.bestMatchesFor = function(str, opts) {
-    var bestQuality, candidate, i, j, len1, matchData, matchDatum, needle, ref, results;
-    if (opts == null) {
-      opts = {};
-    }
-    if (opts.max == null) {
-      opts.max = 7;
-    }
-    if (opts.minQuality == null) {
-      opts.minQuality = 0.4;
-    }
-    if (opts.maxQualityRange == null) {
-      opts.maxQualityRange = 0.4;
-    }
-    if (opts.exactBonus == null) {
-      opts.exactBonus = 0.4;
-    }
-    needle = new Trigrams(str, {
-      stem: true
-    });
-    matchData = (function() {
-      var j, len1, ref, ref1, results;
-      ref = this.trigrams;
-      results = [];
-      for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
-        candidate = ref[i];
-        results.push({
-          candidate: candidate,
-          i: i,
-          q: ((ref1 = candidate.opts.fudgeFactor) != null ? ref1 : 0) + needle.matchQualityWith(candidate, opts.exactBonus)
-        });
-      }
-      return results;
-    }).call(this);
-    matchData.sort(function(x, y) {
-      if (x.q > y.q) {
-        return -1;
-      } else if (x.q < y.q) {
-        return 1;
-      } else if (x.i > y.i) {
-        return 1;
-      } else if (x.i < y.i) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-    bestQuality = (ref = matchData[0]) != null ? ref.q : void 0;
-    results = [];
-    for (i = j = 0, len1 = matchData.length; j < len1; i = ++j) {
-      matchDatum = matchData[i];
-      if (i >= opts.max || matchDatum.q < opts.minQuality || bestQuality - matchDatum.q > opts.maxQualityRange) {
-        break;
-      }
-      results.push(matchDatum.candidate.original);
-    }
-    return results;
-  };
-
-  return Haystack;
-
-})();
-
-//# sourceMappingURL=trigrams.js.map
