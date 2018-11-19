@@ -158,7 +158,7 @@ var getMatches = () => qsa(indexFrame.contentDocument, '.matches td.info-button'
 (async () => {  // only in Chrome can we await at top level in console, so use function wrapper for compatibility
 
   await loadScript('http://right.here:8080/trigrams.js');
-  var csv = await loadSimpleCSV('http://right.here:8080/ko-needed-matches.csv');
+  var csv = await loadSimpleCSV('http://right.here:8080/matches-to-look-up.csv');
 
   // count number of matches already retrieved via number of output lines, to decide where to start in source list,
   // then iterate over rows, which each represent a source match
