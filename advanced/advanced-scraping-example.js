@@ -18,6 +18,7 @@
  * Visit https://uk.soccerway.com/
  * Press Cmd + Alt + I (Mac) or Ctrl + Shift + I (PC) to open developer tools
  * Click 'Console', paste this script in at the > or >>, and press Return
+ * Close the developer tools once it's working, or you'll quickly rack up enormous memory usage
  * To abort, reload the page
  */
 
