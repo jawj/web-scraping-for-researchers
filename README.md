@@ -174,7 +174,7 @@ function process() {
   });
 
   var nextLink = doc.querySelector('a.next');
-  if (nextLink) clickTimeout = setTimeout(function () { nextLink.click(); }, 500);
+  if (nextLink) clickTimeout = setTimeout(function () { nextLink.click(); }, 1000);
   else console.log('Finished.');
 }
 ```
