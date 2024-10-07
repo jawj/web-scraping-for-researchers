@@ -68,7 +68,7 @@ function process() {
   });
 
   var nextLink = doc.querySelector('a.next');
-  if (nextLink) clickTimeout = setTimeout(function () { nextLink.click(); }, 500);  // clickTimeout is global
+  if (nextLink) clickTimeout = setTimeout(function () { nextLink.click(); }, 1000);  // clickTimeout is global
   else console.log('Finished.');
 }
 
