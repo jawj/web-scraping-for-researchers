@@ -168,7 +168,7 @@ function process() {
 
   Array.from(doc.querySelectorAll('.petition-item')).forEach(function (item) {
     var count = parseInt(item.querySelector('.count').getAttribute('data-count'));
-    var title = item.querySelector('h3 a');
+    var title = item.querySelector('h2 a');
     var name = title.text;
     write(count, name, timestamp);
   });
