@@ -167,7 +167,7 @@ function process() {
   var timestamp = new Date();
 
   Array.from(doc.querySelectorAll('.petition-item')).forEach(function (item) {
-    var count = parseInt(item.querySelector('.count').getAttribute('data-count'));
+    var count = parseInt(item.querySelector('.count').textContent.replace(/,/g, ''));
     var title = item.querySelector('h2 a');
     var name = title.text;
     write(count, name, timestamp);
