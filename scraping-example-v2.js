@@ -1,6 +1,6 @@
 
 /* Scrape vote counts for UK government petitions into a CSV
-   Copyright (C) 2017 George MacKerron
+   Copyright (C) 2017 – 2026 George MacKerron
    Made available under the MIT Licence: https://opensource.org/licenses/MIT
  
  * Use any up-to-date browser: Chrome, Firefox, Safari, Edge, IE (these are listed from best to worst)
@@ -61,13 +61,13 @@ function process() {
   var timestamp = new Date();
 
   Array.from(doc.querySelectorAll('.petition-item')).forEach(function (item) {  // use Array.from because NodeList has no forEach in Edge
-    var count = parseInt(item.querySelector('.count').textContent.replace(/,/g, ''));
+    var count = parseInt(item.querySelectorAll('dd')[1].textContent.replace(/,/g, ''));
     var title = item.querySelector('h2 a');
     var name = title.text;
     write(count, name, timestamp);
   });
 
-  var nextLink = doc.querySelector('a.next');
+  var nextLink = doc.querySelector('a[rel=next]');
   if (nextLink) clickTimeout = setTimeout(function () { nextLink.click(); }, 1000);  // clickTimeout is global
   else console.log('Finished.');
 }
