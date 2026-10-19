@@ -151,7 +151,7 @@ if (!Object.assign) Object.assign = function (o1) {
 };
 ```
 
-We include a couple of limited [polyfills](https://en.wikipedia.org/wiki/Polyfill) to stop up gaps in Internet Explorer's JavaScript support. The `if` statements mean they have no effect in other browsers.
+We could include these [polyfills](https://en.wikipedia.org/wiki/Polyfill) to stop up gaps in Internet Explorer's JavaScript support (the `if` statements mean they have no effect in other browsers). But IE is no longer widely used.
 
 
 ### Where the action happens: `process()`
@@ -167,13 +167,13 @@ function process() {
   var timestamp = new Date();
 
   Array.from(doc.querySelectorAll('.petition-item')).forEach(function (item) {
-    var count = parseInt(item.querySelector('.count').textContent.replace(/,/g, ''));
+    var count = parseInt(item.querySelectorAll('dd')[1].textContent.replace(/,/g, ''));
     var title = item.querySelector('h2 a');
     var name = title.text;
     write(count, name, timestamp);
   });
 
-  var nextLink = doc.querySelector('a.next');
+  var nextLink = doc.querySelector('a[rel=next]');
   if (nextLink) clickTimeout = setTimeout(function () { nextLink.click(); }, 1000);
   else console.log('Finished.');
 }
@@ -183,7 +183,7 @@ First, we take a reference to the document loaded inside the `<iframe>`, and the
 
 Next, we select every page element with CSS class `petition-item`, by calling `querySelectorAll()`, and iterate over the returned elements — extracting the data we are interested in, and calling `write()` with the results.
 
-Finally, we look for a [Next] button, again by CSS class. 
+Finally, we look for a [Next] button, this time by its `rel` (relation) field. 
 
 If one is found, we simulate a click on it, to navigate the next page. But we insert a half-second delay before doing so, via `setTimeout`, to play nice and avoid pummelling the server. Once the next page has loaded, the `load` callback already attached to our `<iframe>` will ensure this function, `process()`, is called again.
 
