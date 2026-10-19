@@ -72,10 +72,4 @@ function process() {
   else console.log('Finished.');
 }
 
-// These two lines provide basic 'polyfills' for IE, which lacks some modern JavaScript niceties
-if (!Array.from) Array.from = function (arraylike) { return [].slice.call(arraylike); };
-if (!Object.assign) Object.assign = function (o1) {
-  [].slice.call(arguments, 1).forEach(function (o2) { for (var key in o2) o1[key] = o2[key]; });
-};
-
 start();
